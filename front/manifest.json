@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Ad-blocker",
+  "description": "Block ADs on every website!!",
+  "version": "1.0",
+  "action": {
+    "default_title": "Ad-blocker"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/index.js"]
+    }
+  ]
+}
