@@ -1,0 +1,30 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  width: 400px;
+  height: 100px;
+}
+
+p {
+  font-size: 16px;
+}
+
+#cntAllAds {
+  font-size: 20px;
+  font-weight: 600;
+  color: red;
+}
+
+#cntTodayAds {
+  font-size: 20px;
+  font-weight: 600;
+  color: blue;
+}
