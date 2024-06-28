@@ -5,6 +5,8 @@ const adAttributeList = [
   '.adsbygoogle',
   '.kakao_ad_area',
   '.GoogleActiveViewInnerContainer',
+  '[id^=google_ads_iframe]',
+  '.ad_section',
 ];
 
 //key 값
@@ -40,7 +42,7 @@ const getWithExpire = (key, fn) => {
     else {
       const now = new Date();
       if (now.getTime() > oldItem.expires) {
-        storage.removeItem([key]);
+        storage.remove([key]);
         setWithExpire(key, 0);
         fn(0);
       } else fn(oldItem.value);
@@ -54,14 +56,11 @@ const flattenEverything = (arr) =>
   arr.flatMap((value) => (isIterable(value) ? [...value] : value));
 
 const setLocalStorageItem = (length) => {
-  chrome.storage.local
-    .get([COUNT_ALL_BLOCK_ADS])
-    .then((items) =>
-      chrome.storage.local.set({
-        [COUNT_ALL_BLOCK_ADS]: +items[COUNT_ALL_BLOCK_ADS] + length,
-      })
-    )
-    .catch(chrome.storage.local.set({ [COUNT_ALL_BLOCK_ADS]: length }));
+  chrome.storage.local.get([COUNT_ALL_BLOCK_ADS]).then((items) =>
+    chrome.storage.local.set({
+      [COUNT_ALL_BLOCK_ADS]: +items[COUNT_ALL_BLOCK_ADS] + length,
+    })
+  );
 
   getWithExpire(COUNT_TODAY_BLOCK_ADS, (items) =>
     setWithExpire(COUNT_TODAY_BLOCK_ADS, +items + length)
@@ -75,6 +74,15 @@ const removeAdsLogic = (ads) => {
   else ads.remove();
 };
 
+//유튜브 광고 삭제 로직
+const removeYoutubeAdLogic = () => {
+  const ytbByn = document.getElementsByClassName('ytp-skip-ad-button');
+  if (ytbByn.length) {
+    ytbByn[0].click();
+    setLocalStorageItem(1);
+  }
+};
+
 // 광고 찾고 삭제하는 통합 로직
 function removeAd() {
   let googleAdNodeList = adAttributeList.map((attribute) => {
@@ -86,6 +94,7 @@ function removeAd() {
     googleAds.forEach((ads) => removeAdsLogic(ads));
     googleAdNodeList = [];
   }
+  removeYoutubeAdLogic();
 }
 
 document.addEventListener('DOMNodeInserted', removeAd);
